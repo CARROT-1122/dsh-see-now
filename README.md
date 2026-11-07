@@ -225,9 +225,12 @@ PySide6 装进 venv 之后，用 `DSH_SEE_PYTHON=~/.venvs/pyside/bin/python` 指
   握手成功但 0 帧、不报错）；正常 stop 会调 `Session.Close`，不会留下这个状态。
   真卡住了：`systemctl --user restart xdg-desktop-portal`（GNOME 上还要重启
   `xdg-desktop-portal-gnome`）。
-- **悬浮窗**：用的是上游 `window.py`。它在 Linux 上要 0.2.15+（`42d2f91` 起 ctypes.windll
-  已按平台收口）；`-transparentcolor` 这个 Windows 专有 Tk 属性还需要平台判断，
-  否则仍会 `TclError`（见 issue #40）。
+- **悬浮窗**：用的是上游 `window.py`。非 Windows 上默认走 `frost`（静态磨砂）—— `live`
+  要抓窗口背后的像素，而 Wayland 拿不到、macOS 没给屏幕录制权限时也是黑的，整窗会发黑
+  （issue #45 / PR #38）。想改回实时玻璃或纯色：设置页选，或 `~/.dsh/watch-window.json`
+  写 `{"glass": "live"}`。
+- 非 Windows 上窗口是**一张 `KEY(#010203)` 底色的深色卡片、四角直角**——`-transparentcolor`
+  是 Windows 专有，这里不做透明（Tk 在 X11/Wayland 也不合成 per-pixel alpha）。
 
 然后让模型调：
 
